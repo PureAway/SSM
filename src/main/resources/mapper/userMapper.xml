@@ -15,17 +15,21 @@
     </resultMap>
     <!--通过用户手机查询用户信息，查询手机号是否被注册-->
     <select id="selectUserByPhone" parameterType="String" resultMap="UserBaseMap">
-SELECT * FROM user WHERE UserPhone = #{userPhone} AND IsDelete = 0;
+select * from user where userPhone = #{userPhone} and isDelete = 0;
     </select>
     <!-- 插入用户信息，新用户注册-->
     <insert id="insertUser" parameterType="com.zcy.ssm.entity.User">
         <!-- mysql插入数据后，获取id -->
         <selectKey keyProperty="userId" resultType="String" order="AFTER">
-            SELECT LAST_INSERT_ID() as id
+            select LAST_INSERT_ID() as id
         </selectKey>
 
-        INSERT INTO user(userName, userPhone, userEmail, password, createTime,modifyTime,isDelete)
+        insert into user(userName, userPhone, userEmail, password, createTime,modifyTime,isDelete)
         values(#{userName}, #{userPhone}, #{userEmail}, #{password},#{createTime},#{modifyTime},#{isDelete})
     </insert>
+    <select id="selectUserByUserName" parameterType="String" resultMap="UserBaseMap">
+    select * from user where userName = #{userName}
+</select>
+
 
 </mapper>

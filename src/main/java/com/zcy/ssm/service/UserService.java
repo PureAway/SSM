@@ -17,6 +17,9 @@ public interface UserService extends BaseService {
 
     User getUserByPhone(String userPhone);
 
+    User getUserByUserName(String userName);
+
     Long insertUser(User user);
+
 
 }

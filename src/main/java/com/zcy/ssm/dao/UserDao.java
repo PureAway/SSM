@@ -16,9 +16,11 @@ public interface UserDao extends BaseDao {
 
     List<User> selectAllUser();
 
-    User selectUserById(@Param("UserId") String userId);
+    User selectUserById(@Param("userId") String userId);
 
-    User selectUserByPhone(@Param("UserPhone") String userPhone);
+    User selectUserByPhone(@Param("userPhone") String userPhone);
+
+    User selectUserByUserName(@Param("userName") String userName);
 
     Long insertUser(User user);
 

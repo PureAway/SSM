@@ -32,6 +32,10 @@ public class UserServiceImpl implements UserService {
         return userDao.selectUserByPhone(userPhone);
     }
 
+    public User getUserByUserName(String userName) {
+        return userDao.selectUserByUserName(userName);
+    }
+
     public Long insertUser(User user) {
         return userDao.insertUser(user);
     }

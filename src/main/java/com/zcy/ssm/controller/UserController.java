@@ -62,9 +62,19 @@ public class UserController extends BaseController {
 
         log.info("用户登录");
         log.info("用户登录信息==========" + JSON.toJSONString(user));
-
-
-        return null;
+        User thisUser = userService.getUserByUserName(user.getUserName());
+        Result<User> result;
+        if (null == thisUser) {
+            result = new Result<User>(null, "用户名不存在", 0);
+        } else {
+            if (thisUser.getPassword().equals(user.getPassword()) && thisUser.getUserName().equals(user.getUserName())) {
+                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
+                result = new Result<User>(thisUser, "登录成功", 1);
+            } else {
+                result = new Result<User>(null, "密码错误", 0);
+            }
+        }
+        return result;
 
     }
 

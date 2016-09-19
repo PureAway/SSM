@@ -5,6 +5,7 @@ import com.zcy.ssm.base.controller.BaseController;
 import com.zcy.ssm.base.dto.Result;
 import com.zcy.ssm.entity.User;
 import com.zcy.ssm.service.UserService;
+import com.zcy.ssm.utils.MD5Util;
 import com.zcy.ssm.utils.UUIDUtil;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,7 +33,7 @@ public class UserController extends BaseController {
      * @return
      */
     @ResponseBody
-    @RequestMapping(value = "/register.do", method = {RequestMethod.POST, RequestMethod.GET})
+    @RequestMapping(value = "/register.do", method = RequestMethod.POST)
     private Result<User> userRegister(User user) {
         log.info("用户注册");
         log.info("用户注册信息==========" + JSON.toJSONString(user));
@@ -56,9 +57,15 @@ public class UserController extends BaseController {
         return result;
     }
 
+    /**
+     * 用户用户名登录
+     *
+     * @param user
+     * @return
+     */
     @ResponseBody
     @RequestMapping(value = "/login.do", method = RequestMethod.POST)
-    private Result<User> userLogin(User user) {
+    private Result<User> userLoginByUserName(User user) {
 
         log.info("用户登录");
         log.info("用户登录信息==========" + JSON.toJSONString(user));
@@ -67,15 +74,42 @@ public class UserController extends BaseController {
         if (null == thisUser) {
             result = new Result<User>(null, "用户名不存在", 0);
         } else {
-            if (thisUser.getPassword().equals(user.getPassword()) && thisUser.getUserName().equals(user.getUserName())) {
+            if (MD5Util.MD5(thisUser.getPassword()).equals(user.getPassword()) && thisUser.getUserName().equals(user.getUserName())) {
                 thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
                 result = new Result<User>(thisUser, "登录成功", 1);
             } else {
                 result = new Result<User>(null, "密码错误", 0);
             }
         }
+        log.info("用户登录结果==========" + JSON.toJSONString(result));
         return result;
+    }
 
+    /**
+     * 用户手机登录
+     *
+     * @param user
+     * @return
+     */
+    @ResponseBody
+    @RequestMapping(value = "/loginByPhone.do", method = RequestMethod.POST)
+    private Result<User> userLoginByUserPhone(User user) {
+        log.info("用户登录");
+        log.info("用户登录信息==========" + JSON.toJSONString(user));
+        User thisUser = userService.getUserByPhone(user.getUserPhone());
+        Result<User> result;
+        if (null == thisUser) {
+            result = new Result<User>(null, "手机号不存在", 0);
+        } else {
+            if (MD5Util.MD5(thisUser.getPassword()).equals(user.getPassword()) && thisUser.getUserPhone().equals(user.getUserPhone())) {
+                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
+                result = new Result<User>(thisUser, "登录成功", 1);
+            } else {
+                result = new Result<User>(null, "密码错误", 0);
+            }
+        }
+        log.info("用户登录结果==========" + JSON.toJSONString(result));
+        return result;
     }
 
 

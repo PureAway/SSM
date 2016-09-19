@@ -28,7 +28,7 @@ select * from user where userPhone = #{userPhone} and isDelete = 0;
         values(#{userName}, #{userPhone}, #{userEmail}, #{password},#{createTime},#{modifyTime},#{isDelete})
     </insert>
     <select id="selectUserByUserName" parameterType="String" resultMap="UserBaseMap">
-    select * from user where userName = #{userName}
+    select * from user where userName = #{userName} and isDelete = 0;
 </select>
 
 

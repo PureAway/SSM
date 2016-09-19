@@ -4,6 +4,7 @@ import com.zcy.ssm.dao.UserDao;
 import com.zcy.ssm.entity.User;
 import com.zcy.ssm.service.UserService;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  * Created by zcy on 2016/9/14.
  */
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class UserServiceImpl implements UserService {
 
 

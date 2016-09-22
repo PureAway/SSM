@@ -1,9 +1,8 @@
 package com.zcy.ssm.service;
 
+import com.zcy.ssm.base.dto.Result;
 import com.zcy.ssm.base.service.BaseService;
 import com.zcy.ssm.entity.User;
-
-import java.util.List;
 
 /**
  * UserService
@@ -11,15 +10,13 @@ import java.util.List;
  */
 public interface UserService extends BaseService {
 
-    List<User> getAllUser();
+    void userRegister(User user, Result result);
 
-    User getUserById(String userId);
+    void userLoginByUserName(User user, Result result);
 
-    User getUserByPhone(String userPhone);
+    void userLoginByUserPhone(User user, Result result);
 
-    User getUserByUserName(String userName);
+    void reSetPassword(User user, Result result);
 
-    Long insertUser(User user);
-
-
+    void updatePassword(User user, Result result);
 }

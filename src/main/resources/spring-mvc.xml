@@ -29,8 +29,9 @@
     </bean>
 
     <mvc:annotation-driven/>
-    <mvc:resources mapping="/swagger-ui/**" location="/swagger-ui-2.1.3/"/>
-    <mvc:resources mapping="index.html" location="/swagger-ui-2.1.3/"/>
+    <bean class="com.zcy.ssm.config.SwaggerConfig"/>
+    <!-- Serve static content-->
+    <mvc:default-servlet-handler/>
     <!-- 定义跳转的文件的前后缀 ，视图模式配置 -->
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
         <property name="prefix" value="/WEB-INF/jsp/"/>

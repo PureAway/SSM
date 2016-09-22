@@ -6,21 +6,30 @@ import java.io.Serializable;
  * 结果集封装
  * Created by zcy on 2016/9/14.
  */
-public class Result<T> implements Serializable {
+public class Result implements Serializable {
 
-    private T data;
+    private Object data;
 
     private String returnMessage;
 
     private int returnCode;
 
-    public Result(T data, String returnMessage, int returnCode) {
+    public Result() {
+    }
+
+    public Result(Object data, String returnMessage, int returnCode) {
         this.data = data;
         this.returnMessage = returnMessage;
         this.returnCode = returnCode;
     }
 
-    public T getData() {
+    public void setResult(Object data,String returnMessage,int returnCode){
+        this.data = data;
+        this.returnMessage = returnMessage;
+        this.returnCode = returnCode;
+    }
+
+    public Object getData() {
         return data;
     }
 
@@ -32,7 +41,7 @@ public class Result<T> implements Serializable {
         return returnCode;
     }
 
-    public void setData(T data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

@@ -27,9 +27,53 @@ select * from user where userPhone = #{userPhone} and isDelete = 0;
         insert into user(userName, userPhone, userEmail, password, createTime,modifyTime,isDelete)
         values(#{userName}, #{userPhone}, #{userEmail}, #{password},#{createTime},#{modifyTime},#{isDelete})
     </insert>
-    <select id="selectUserByUserName" parameterType="String" resultMap="UserBaseMap">
-    select * from user where userName = #{userName} and isDelete = 0;
-</select>
 
+    <!--根据用户名查询用户-->
+    <select id="selectUserByUserName" parameterType="String" resultMap="UserBaseMap">
+    select * from user where userName = #{userName} and isDelete = 0
+</select>
+    <select id="selectUserById" parameterType="String" resultMap="UserBaseMap">
+        select * from user where id = #{userId} and isDelete = 0
+    </select>
+
+    <update id="updatePassword" parameterType="Map">
+        update user
+        <set>
+            <if test="password ! = null">
+                password = #{password}
+            </if>
+        </set>
+        <set>
+            <if test="modifyTime ! = null">
+                modifyTime = #{modifyTime}
+            </if>
+        </set>
+        where id = #{userId}
+    </update>
+
+    <update id="updateUser" parameterType="com.zcy.ssm.entity.User">
+        update user
+        <set>
+            <if test="userName ! = null">
+                userName = #{userName}
+            </if>
+        </set>
+        <set>
+            <if test="userPhone ! = null">
+                userName = #{userPhone}
+            </if>
+        </set>
+        <set>
+            <if test="userEmail ! = null">
+                userName = #{userEmail}
+            </if>
+        </set>
+        <set>
+            <if test="modifyTime ! = null">
+                userName = #{modifyTime}
+            </if>
+        </set>
+        where id = #{userId}
+    </update>
 
 </mapper>

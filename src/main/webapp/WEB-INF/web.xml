@@ -23,6 +23,14 @@
             <param-value>true</param-value>
         </init-param>
     </filter>
+    <filter>
+        <filter-name>cors</filter-name>
+        <filter-class>com.zcy.ssm.config.SimpleCORSFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>cors</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
     <filter-mapping>
         <filter-name>characterEncodingFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -40,5 +48,9 @@
         <servlet-name>spring-mvc</servlet-name>
         <!-- 此处也可以配置成 *.do 形式或者/-->
         <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>spring-mvc</servlet-name>
+        <url-pattern>/v2/api-docs</url-pattern>
     </servlet-mapping>
 </web-app>

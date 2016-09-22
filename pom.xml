@@ -249,6 +249,6 @@
 
     </dependencies>
     <build>
-        <finalName>ssm</finalName>
+        <finalName>SSM</finalName>
     </build>
 </project>

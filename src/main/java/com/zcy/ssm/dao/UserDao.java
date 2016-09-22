@@ -5,6 +5,7 @@ import com.zcy.ssm.entity.User;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -23,5 +24,11 @@ public interface UserDao extends BaseDao {
     User selectUserByUserName(@Param("userName") String userName);
 
     Long insertUser(User user);
+
+    void updatePassword(@Param("userId") String userId, @Param("password") String password,
+                        @Param("modifyTime") Date modifyTime
+    );
+
+    void updateUser(User user);
 
 }

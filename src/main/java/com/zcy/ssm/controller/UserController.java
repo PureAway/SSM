@@ -5,14 +5,10 @@ import com.zcy.ssm.base.controller.BaseController;
 import com.zcy.ssm.base.dto.Result;
 import com.zcy.ssm.entity.User;
 import com.zcy.ssm.service.UserService;
-import com.zcy.ssm.utils.MD5Util;
-import com.zcy.ssm.utils.TextUtils;
-import com.zcy.ssm.utils.UUIDUtil;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * UserController
@@ -140,7 +136,7 @@ public class UserController extends BaseController {
         log.info("用户登录信息==========" + JSON.toJSONString(user));
         Result result = new Result();
         try {
-
+            userService.userLoginByUserPhone(user, result);
         } catch (Exception e) {
             errorHandler(e, result);
         } finally {
@@ -153,9 +149,9 @@ public class UserController extends BaseController {
     /**
      * 用户找回密码
      *
-     * @param userName
-     * @param userPhone
-     * @param password
+     * @param userName  用户名
+     * @param userPhone 用户注册手机号
+     * @param password  用户需要重置的密码
      * @return
      */
     @ResponseBody
@@ -191,41 +187,16 @@ public class UserController extends BaseController {
             log.info("用户重设密码结果==========" + JSON.toJSONString(result));
         }
         return result;
-
-        User thisUser = userService.getUserByUserName(user.getUserName());
-        Result result = new Result();
-        if (null == thisUser) {
-            result = new Result<User>(null, "该用户不存在", 0);
-            return result;
-        }
-        if (!thisUser.getUserPhone().equals(user.getUserPhone())) {
-            result = new Result<User>(null, "用户名与注册手机号不匹配", 0);
-            return result;
-        }
-        if (thisUser.getUserPhone().equals(user.getUserPhone())) {
-            try {
-                user.setUserId(thisUser.getUserId());
-                user.setModifyTime(new Date());
-                userService.updatePassword(user);
-                thisUser.setPassword(password);
-                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
-                result = new Result<User>(thisUser, "重设密码成功", 1);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        }
-
-        return result;
     }
 
 
     /**
      * 用户修改密码
      *
-     * @param userId
-     * @param password
-     * @param newPassword
-     * @param token
+     * @param userId      用户id
+     * @param password    用户旧密码
+     * @param newPassword 用户新密码
+     * @param token       token
      * @return
      */
     @ResponseBody
@@ -235,7 +206,7 @@ public class UserController extends BaseController {
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回参数", response = Result.class),
     })
-    private Result<User> updatePassword(
+    private Result updatePassword(
             @ApiParam(value = "用户id", name = "userId", required = true, example = "userId = 9")
             @RequestParam("userId")
                     String userId,
@@ -252,36 +223,18 @@ public class UserController extends BaseController {
         User user = new User();
         user.setUserId(userId);
         user.setPassword(password);
+        user.setToken(token);
+        user.setNewPassword(newPassword);
         log.info("用户修改密码");
         log.info("用户修改密码信息==========" + JSON.toJSONString(user));
-        User thisUser = userService.getUserById(user);
-        Result<User> result = null;
-        String thisToken = UUIDUtil.getToken(userId);
-        if (!token.equals(thisToken)) {
-            result = new Result<User>(null, "token验证失败", -1);
-            return result;
+        Result result = new Result();
+        try {
+            userService.reSetPassword(user, result);
+        } catch (Exception e) {
+            errorHandler(e, result);
+        } finally {
+            log.info("用户修改密码结果==========" + JSON.toJSONString(result));
         }
-        if (null == thisUser) {
-            result = new Result<User>(null, "该用户不存在", 0);
-            return result;
-        }
-        if (!thisUser.getPassword().equals(user.getPassword())) {
-            result = new Result<User>(null, "旧密码错误", 0);
-            return result;
-        }
-        if (thisUser.getPassword().equals(user.getPassword())) {
-            try {
-                user.setPassword(newPassword);
-                user.setModifyTime(new Date());
-                userService.updatePassword(user);
-                thisUser.setPassword(password);
-                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
-                result = new Result<User>(thisUser, "重设密码成功", 1);
-            } catch (Exception e) {
-                log.error(e.getMessage());
-            }
-        }
-        log.info("用户修改密码结果==========" + JSON.toJSONString(result));
         return result;
     }
 

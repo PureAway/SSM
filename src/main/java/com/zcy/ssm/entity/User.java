@@ -22,8 +22,6 @@ public class User extends BaseRequest {
 
     /**
      * 用户电话号码
-     *
-     *
      */
     private String userPhone;
 
@@ -51,6 +49,48 @@ public class User extends BaseRequest {
      * 用户信息是否删除
      */
     private int isDelete;
+
+    /**
+     * 用户新密码
+     */
+    private String newPassword;
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public void setUserPhone(String userPhone) {
+        this.userPhone = userPhone;
+    }
+
+    public void setUserEmail(String userEmail) {
+        this.userEmail = userEmail;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public void setModifyTime(Date modifyTime) {
+        this.modifyTime = modifyTime;
+    }
+
+    public void setIsDelete(int isDelete) {
+        this.isDelete = isDelete;
+    }
+
+    public void setNewPassword(String newPassword) {
+        this.newPassword = newPassword;
+    }
+
 
     public String getUserId() {
         return userId;
@@ -84,36 +124,8 @@ public class User extends BaseRequest {
         return isDelete;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public void setUserPhone(String userPhone) {
-        this.userPhone = userPhone;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public void setModifyTime(Date modifyTime) {
-        this.modifyTime = modifyTime;
-    }
-
-    public void setIsDelete(int isDelete) {
-        this.isDelete = isDelete;
+    public String getNewPassword() {
+        return newPassword;
     }
 }
 

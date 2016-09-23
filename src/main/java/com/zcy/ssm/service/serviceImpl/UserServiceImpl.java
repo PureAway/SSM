@@ -99,10 +99,59 @@ public class UserServiceImpl implements UserService {
     }
 
     public void reSetPassword(User user, Result result) {
-
+        try {
+            User thisUser = userDao.selectUserByUserName(user.getUserName());
+            if (null == thisUser) {
+                result.setResult(null, "该用户不存在", 0);
+                return;
+            }
+            if (!thisUser.getUserPhone().equals(user.getUserPhone())) {
+                result.setResult(null, "用户名与注册手机号不匹配", 0);
+                return;
+            }
+            if (thisUser.getUserPhone().equals(user.getUserPhone())) {
+                user.setUserId(thisUser.getUserId());
+                user.setModifyTime(new Date());
+                userDao.updateUser(user);
+                thisUser.setPassword(user.getPassword());
+                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
+                result.setResult(thisUser, "密码重设成功", 1);
+            }
+        } catch (Exception e) {
+            System.out.println("==用户根据用户名和手机号重设密码=" + e.toString());
+            result.setReturnMessage("内部服务器错误");
+            result.setReturnCode(0);
+        }
     }
 
     public void updatePassword(User user, Result result) {
-
+        try {
+            String thisToken = UUIDUtil.getToken(user.getUserId());
+            if (!user.getToken().equals(thisToken)) {
+                result.setResult(null, "token验证失败", 0);
+                return;
+            }
+            User thisUser = userDao.selectUserById(user.getUserId());
+            if (null == thisUser) {
+                result.setResult(null, "该用户不存在", 0);
+                return;
+            }
+            if (!thisUser.getPassword().equals(user.getPassword())) {
+                result.setResult(null, "旧密码错误", 0);
+                return;
+            }
+            if (thisUser.getPassword().equals(user.getPassword())) {
+                user.setPassword(user.getNewPassword());
+                user.setModifyTime(new Date());
+                userDao.updateUser(user);
+                thisUser.setPassword(user.getNewPassword());
+                thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
+                result.setResult(thisUser, "重设密码成功", 1);
+            }
+        } catch (Exception e) {
+            System.out.println("==用户修改密码=" + e.toString());
+            result.setReturnMessage("内部服务器错误");
+            result.setReturnCode(0);
+        }
     }
 }

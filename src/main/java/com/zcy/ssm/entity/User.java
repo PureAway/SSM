@@ -2,8 +2,6 @@ package com.zcy.ssm.entity;
 
 import com.zcy.ssm.base.dto.BaseRequest;
 
-import java.util.Date;
-
 /**
  * 用户信息封装类
  * Created by zcy on 2016/9/14.
@@ -38,12 +36,12 @@ public class User extends BaseRequest {
     /**
      * 用户创建时间
      */
-    private Date createTime;
+    private Long createTime;
 
     /**
      * 用户信息最后修改时间
      */
-    private Date modifyTime;
+    private Long modifyTime;
 
     /**
      * 用户信息是否删除
@@ -54,6 +52,19 @@ public class User extends BaseRequest {
      * 用户新密码
      */
     private String newPassword;
+
+    /**
+     * 用户头像地址
+     */
+    private String userHeadImg;
+
+    public String getUserHeadImg() {
+        return userHeadImg;
+    }
+
+    public void setUserHeadImg(String userHeadImg) {
+        this.userHeadImg = userHeadImg;
+    }
 
     public void setUserId(String userId) {
         this.userId = userId;
@@ -75,11 +86,11 @@ public class User extends BaseRequest {
         this.password = password;
     }
 
-    public void setCreateTime(Date createTime) {
+    public void setCreateTime(Long createTime) {
         this.createTime = createTime;
     }
 
-    public void setModifyTime(Date modifyTime) {
+    public void setModifyTime(Long modifyTime) {
         this.modifyTime = modifyTime;
     }
 
@@ -112,11 +123,11 @@ public class User extends BaseRequest {
         return password;
     }
 
-    public Date getCreateTime() {
+    public Long getCreateTime() {
         return createTime;
     }
 
-    public Date getModifyTime() {
+    public Long getModifyTime() {
         return modifyTime;
     }
 

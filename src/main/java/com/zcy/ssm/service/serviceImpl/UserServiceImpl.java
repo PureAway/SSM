@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
 
 /**
  * 户操作实现类
@@ -39,15 +38,12 @@ public class UserServiceImpl implements UserService {
             if (null != thisUser) {
                 result.setResult(null, "该手机号已经被注册", 0);
             } else {
-                user.setCreateTime(new Date());
-                user.setModifyTime(new Date());
-                Long code = userDao.insertUser(user);
-                if (code >= 1) { // 注册成功
-                    user.setToken(UUIDUtil.getToken(String.valueOf(code)));
-                    result.setResult(user, "注册成功", 1);
-                } else { // 注册失败
-                    result.setResult(null, "内部服务器错误", 0);
-                }
+                user.setCreateTime(System.currentTimeMillis());
+                user.setModifyTime(System.currentTimeMillis());
+                userDao.insertUser(user);
+                user = userDao.selectUserByPhone(user.getUserPhone());
+                user.setToken(UUIDUtil.getToken(user.getUserId()));
+                result.setResult(user, "注册成功", 1);
             }
         } catch (Exception e) {
             System.out.println("==用户注册=" + e.toString());
@@ -56,25 +52,6 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    public void userLoginByUserName(User user, Result result) {
-        try {
-            User thisUser = userDao.selectUserByUserName(user.getUserName());
-            if (null == thisUser) {
-                result.setResult(null, "用户名不存在", 0);
-            } else {
-                if (MD5Util.MD5(thisUser.getPassword()).equals(user.getPassword()) && thisUser.getUserName().equals(user.getUserName())) {
-                    thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
-                    result.setResult(thisUser, "登录成功", 1);
-                } else {
-                    result.setResult(null, "密码错误", 0);
-                }
-            }
-        } catch (Exception e) {
-            System.out.println("==用户根据用户名登录=" + e.toString());
-            result.setReturnMessage("内部服务器错误");
-            result.setReturnCode(0);
-        }
-    }
 
     public void userLoginByUserPhone(User user, Result result) {
 
@@ -100,19 +77,19 @@ public class UserServiceImpl implements UserService {
 
     public void reSetPassword(User user, Result result) {
         try {
-            User thisUser = userDao.selectUserByUserName(user.getUserName());
+            User thisUser = userDao.selectUserByPhone(user.getUserPhone());
             if (null == thisUser) {
                 result.setResult(null, "该用户不存在", 0);
                 return;
             }
-            if (!thisUser.getUserPhone().equals(user.getUserPhone())) {
+            if (!thisUser.getUserName().equals(user.getUserName())) {
                 result.setResult(null, "用户名与注册手机号不匹配", 0);
                 return;
             }
             if (thisUser.getUserPhone().equals(user.getUserPhone())) {
                 user.setUserId(thisUser.getUserId());
-                user.setModifyTime(new Date());
-                userDao.updateUser(user);
+                user.setModifyTime(System.currentTimeMillis());
+                userDao.updatePassword(user);
                 thisUser.setPassword(user.getPassword());
                 thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
                 result.setResult(thisUser, "密码重设成功", 1);
@@ -128,7 +105,7 @@ public class UserServiceImpl implements UserService {
         try {
             String thisToken = UUIDUtil.getToken(user.getUserId());
             if (!user.getToken().equals(thisToken)) {
-                result.setResult(null, "token验证失败", 0);
+                result.setResult(null, "token验证失败", -1);
                 return;
             }
             User thisUser = userDao.selectUserById(user.getUserId());
@@ -142,12 +119,41 @@ public class UserServiceImpl implements UserService {
             }
             if (thisUser.getPassword().equals(user.getPassword())) {
                 user.setPassword(user.getNewPassword());
-                user.setModifyTime(new Date());
-                userDao.updateUser(user);
+                user.setModifyTime(System.currentTimeMillis());
+                userDao.updatePassword(user);
                 thisUser.setPassword(user.getNewPassword());
                 thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
                 result.setResult(thisUser, "重设密码成功", 1);
             }
+        } catch (Exception e) {
+            System.out.println("==用户修改密码=" + e.toString());
+            result.setReturnMessage("内部服务器错误");
+            result.setReturnCode(0);
+        }
+    }
+
+    public void updateUserInfo(User user, Result result) {
+        try {
+            String thisToken = UUIDUtil.getToken(user.getUserId());
+            if (!user.getToken().equals(thisToken)) {
+                result.setResult(null, "token验证失败", -1);
+                return;
+            }
+            User thisUser = userDao.selectUserById(user.getUserId());
+            if (null == thisUser) {
+                result.setResult(null, "该用户不存在", 0);
+                return;
+            }
+            thisUser = userDao.selectUserByPhone(user.getUserPhone());
+            if (null != thisUser) {
+                result.setResult(null, "该手机号已被占用", 0);
+                return;
+            }
+            user.setModifyTime(System.currentTimeMillis());
+            userDao.updateUser(user);
+            thisUser = userDao.selectUserById(user.getUserId());
+            thisUser.setToken(UUIDUtil.getToken(user.getUserId()));
+            result.setResult(thisUser, "个人信息修改成功", 1);
         } catch (Exception e) {
             System.out.println("==用户修改密码=" + e.toString());
             result.setReturnMessage("内部服务器错误");

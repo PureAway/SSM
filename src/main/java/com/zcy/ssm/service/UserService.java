@@ -18,13 +18,6 @@ public interface UserService extends BaseService {
      */
     void userRegister(User user, Result result);
 
-    /**
-     * 用户登录
-     *
-     * @param user   登录用户
-     * @param result 登录结果
-     */
-    void userLoginByUserName(User user, Result result);
 
     /**
      * 用户登录
@@ -50,4 +43,12 @@ public interface UserService extends BaseService {
      * @param result 用户修改密码结果
      */
     void updatePassword(User user, Result result);
+
+    /**
+     * 用户修改个人信息
+     *
+     * @param user   用户信息
+     * @param result 修改结果
+     */
+    void updateUserInfo(User user, Result result);
 }

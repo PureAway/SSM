@@ -14,7 +14,7 @@ import javax.annotation.Resource;
  * UserController
  * Created by zcy on 2016/9/14.
  */
-@Api(value = "/user", description = "用户基本API")
+@Api(value = "/user", description = "用户基本API",position = 0)
 @RestController
 @RequestMapping("/user")
 public class UserController extends BaseController {
@@ -32,7 +32,7 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/register.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
 
-    @ApiOperation(value = "用户注册", notes = "新用户注册", response = Result.class, httpMethod = "POST", position = 0)
+    @ApiOperation(value = "用户注册", notes = "新用户注册", response = Result.class, httpMethod = "POST")
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回参数", response = Result.class),
     })
@@ -46,7 +46,7 @@ public class UserController extends BaseController {
             @ApiParam(value = "注册手机号", required = true, name = "userPhone", example = "userPhone = 18888888888")
             @RequestParam("userPhone")
                     String userPhone,
-            @ApiParam(value = "注册邮箱", required = false, name = "userEmail", example = "userEmail = zhuchunyao164488421@hotmail.com")
+            @ApiParam(value = "注册邮箱", name = "userEmail", example = "userEmail = zhuchunyao164488421@hotmail.com")
             @RequestParam("userEmail")
                     String userEmail
     ) {
@@ -70,45 +70,6 @@ public class UserController extends BaseController {
 
 
     /**
-     * 用户根据用户名密码登录
-     *
-     * @param userName 登录用户名
-     * @param password 登录密码(MD5 32小写加密)
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = "/loginByUserName.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
-
-    @ApiOperation(value = "用户登录", notes = "用户名登录", response = Result.class, httpMethod = "POST", position = 1)
-    @ApiResponses({
-            @ApiResponse(code = 200, message = "返回参数", response = Result.class),
-    })
-    private Result userLoginByUserName(
-            @ApiParam(value = "登录用户名", required = true, name = "userName", example = "userName = zcy")
-            @RequestParam("userName")
-                    String userName,
-            @ApiParam(value = "登录密码(MD5 32小写加密)", required = true, name = "password", example = "password = e10adc3949ba59abbe56e057f20f883e")
-            @RequestParam("password")
-                    String password
-    ) {
-        User user = new User();
-        user.setUserName(userName);
-        user.setPassword(password);
-        log.info("用户登录");
-        log.info("用户登录信息==========" + JSON.toJSONString(user));
-        Result result = new Result();
-        try {
-            userService.userLoginByUserName(user, result);
-        } catch (Exception e) {
-            errorHandler(e, result);
-        } finally {
-            log.info("用户登录结果==========" + JSON.toJSONString(result));
-        }
-        return result;
-    }
-
-
-    /**
      * 用户根据手机号和密码登录
      *
      * @param userPhone 登录手机号
@@ -117,7 +78,7 @@ public class UserController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/loginByUserPhone.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
-    @ApiOperation(value = "用户登录", notes = "手机号登录", response = Result.class, httpMethod = "POST", position = 2)
+    @ApiOperation(value = "用户登录", notes = "手机号登录", response = Result.class, httpMethod = "POST")
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回参数", response = Result.class),
     })
@@ -202,7 +163,7 @@ public class UserController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/updatePassword.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
 
-    @ApiOperation(value = "用户修改密码", notes = "用户修改密码", response = Result.class, httpMethod = "POST", position = 4)
+    @ApiOperation(value = "用户修改密码", notes = "用户修改密码", response = Result.class, httpMethod = "POST")
     @ApiResponses({
             @ApiResponse(code = 200, message = "返回参数", response = Result.class),
     })
@@ -229,7 +190,7 @@ public class UserController extends BaseController {
         log.info("用户修改密码信息==========" + JSON.toJSONString(user));
         Result result = new Result();
         try {
-            userService.reSetPassword(user, result);
+            userService.updatePassword(user, result);
         } catch (Exception e) {
             errorHandler(e, result);
         } finally {
@@ -238,5 +199,45 @@ public class UserController extends BaseController {
         return result;
     }
 
+    @ResponseBody
+    @RequestMapping(value = "/updateUserInfo.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
+    @ApiOperation(value = "用户修改个人信息", notes = "用户修改个人信息", response = Result.class, httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "返回参数", response = Result.class),
+    })
+    private Result updateUserInfo(
+            @ApiParam(value = "用户id", name = "userId", required = true, example = "userId = 9")
+            @RequestParam("userId")
+                    String userId,
+            @ApiParam(value = "用户名", name = "userName", example = "userName = zcy")
+            @RequestParam("userName")
+                    String userName,
+            @ApiParam(value = "用户手机号", name = "userPhone", example = "userPhone = 18888888888")
+            @RequestParam("userPhone")
+                    String userPhone,
+            @ApiParam(value = "用户邮箱", name = "userEmail", example = "userEmail = 164488421@qq.com")
+            @RequestParam("userEmail")
+                    String userEmail,
+            @ApiParam(value = "token", name = "token", required = true, example = "token = token")
+            @RequestParam("token")
+                    String token
+    ) {
+        User user = new User();
+        user.setUserId(userId);
+        user.setToken(token);
+        user.setUserPhone(userPhone);
+        user.setUserEmail(userEmail);
+        log.info("用户修改个人信息");
+        log.info("用户修改个人信息==========" + JSON.toJSONString(user));
+        Result result = new Result();
+        try {
+            userService.updateUserInfo(user, result);
+        } catch (Exception e) {
+            errorHandler(e, result);
+        } finally {
+            log.info("用户修改个人信息结果==========" + JSON.toJSONString(result));
+        }
+        return result;
+    }
 
 }

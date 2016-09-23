@@ -3,10 +3,8 @@ package com.zcy.ssm.dao;
 import com.zcy.ssm.base.dao.BaseDao;
 import com.zcy.ssm.entity.User;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
-
-import java.util.Date;
-import java.util.List;
 
 /**
  * UserDao
@@ -15,20 +13,14 @@ import java.util.List;
 @Repository
 public interface UserDao extends BaseDao {
 
-    List<User> selectAllUser();
+    User selectUserById(@Param("userId") String userId) throws DataAccessException;
 
-    User selectUserById(@Param("userId") String userId);
+    User selectUserByPhone(@Param("userPhone") String userPhone) throws DataAccessException;
 
-    User selectUserByPhone(@Param("userPhone") String userPhone);
+    Long insertUser(User user) throws DataAccessException;
 
-    User selectUserByUserName(@Param("userName") String userName);
+    void updatePassword(User user) throws DataAccessException;
 
-    Long insertUser(User user);
-
-    void updatePassword(@Param("userId") String userId, @Param("password") String password,
-                        @Param("modifyTime") Date modifyTime
-    );
-
-    void updateUser(User user);
+    void updateUser(User user) throws DataAccessException;
 
 }

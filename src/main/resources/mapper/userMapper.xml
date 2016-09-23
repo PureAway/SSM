@@ -9,8 +9,9 @@
         <result column="userPhone" property="userPhone" jdbcType="VARCHAR"/>
         <result column="userEmail" property="userEmail" jdbcType="VARCHAR"/>
         <result column="password" property="password" jdbcType="VARCHAR"/>
-        <result column="createTime" property="createTime" jdbcType="DATE"/>
-        <result column="modifyTime" property="modifyTime" jdbcType="DATE"/>
+        <result column="createTime" property="createTime" jdbcType="BIGINT"/>
+        <result column="modifyTime" property="modifyTime" jdbcType="BIGINT"/>
+        <result column="userHeadImg" property="userHeadImg" jdbcType="VARCHAR"/>
         <result column="isDelete" property="isDelete" jdbcType="SMALLINT"></result>
     </resultMap>
     <!--通过用户手机查询用户信息，查询手机号是否被注册-->
@@ -23,7 +24,6 @@ select * from user where userPhone = #{userPhone} and isDelete = 0;
         <selectKey keyProperty="userId" resultType="String" order="AFTER">
             select LAST_INSERT_ID() as id
         </selectKey>
-
         insert into user(userName, userPhone, userEmail, password, createTime,modifyTime,isDelete)
         values(#{userName}, #{userPhone}, #{userEmail}, #{password},#{createTime},#{modifyTime},#{isDelete})
     </insert>
@@ -36,15 +36,13 @@ select * from user where userPhone = #{userPhone} and isDelete = 0;
         select * from user where id = #{userId} and isDelete = 0
     </select>
 
-    <update id="updatePassword" parameterType="Map">
+    <update id="updatePassword" parameterType="com.zcy.ssm.entity.User" flushCache="true">
         update user
         <set>
-            <if test="password ! = null">
-                password = #{password}
+            <if test="password != null">
+                password = #{password},
             </if>
-        </set>
-        <set>
-            <if test="modifyTime ! = null">
+            <if test="modifyTime != null">
                 modifyTime = #{modifyTime}
             </if>
         </set>
@@ -54,23 +52,17 @@ select * from user where userPhone = #{userPhone} and isDelete = 0;
     <update id="updateUser" parameterType="com.zcy.ssm.entity.User">
         update user
         <set>
-            <if test="userName ! = null">
-                userName = #{userName}
+            <if test="userName != null">
+                userName = #{userName},
             </if>
-        </set>
-        <set>
-            <if test="userPhone ! = null">
-                userName = #{userPhone}
+            <if test="userPhone != null">
+                userPhone = #{userPhone},
             </if>
-        </set>
-        <set>
-            <if test="userEmail ! = null">
-                userName = #{userEmail}
+            <if test="userEmail != null">
+                userEmail = #{userEmail},
             </if>
-        </set>
-        <set>
-            <if test="modifyTime ! = null">
-                userName = #{modifyTime}
+            <if test="modifyTime != null">
+                modifyTime = #{modifyTime},
             </if>
         </set>
         where id = #{userId}

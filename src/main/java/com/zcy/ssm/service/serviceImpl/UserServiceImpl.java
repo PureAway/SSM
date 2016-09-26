@@ -1,6 +1,7 @@
 package com.zcy.ssm.service.serviceImpl;
 
 import com.zcy.ssm.base.dto.Result;
+import com.zcy.ssm.config.CommonConfig;
 import com.zcy.ssm.dao.UserDao;
 import com.zcy.ssm.entity.User;
 import com.zcy.ssm.service.UserService;
@@ -62,6 +63,11 @@ public class UserServiceImpl implements UserService {
             } else {
                 if (MD5Util.MD5(thisUser.getPassword()).equals(user.getPassword()) && thisUser.getUserPhone().equals(user.getUserPhone())) {
                     thisUser.setToken(UUIDUtil.getToken(thisUser.getUserId()));
+                    if (!TextUtils.isEmpty(thisUser.getUserHeadImg())) {
+                        thisUser.setUserHeadImg(CommonConfig.getPublicAddress() + CommonConfig.getImageAddress() + thisUser.getUserHeadImg());
+                    } else {
+                        thisUser.setUserHeadImg(null);
+                    }
                     result.setResult(thisUser, "登录成功", 1);
                 } else {
                     result.setResult(null, "密码错误", 0);

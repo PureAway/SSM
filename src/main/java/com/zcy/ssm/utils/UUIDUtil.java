@@ -2,6 +2,8 @@ package com.zcy.ssm.utils;
 
 import sun.misc.BASE64Encoder;
 
+import java.util.UUID;
+
 
 /**
  * UUID
@@ -21,5 +23,10 @@ public class UUIDUtil {
     public static String getToken(String UserId) {
         BASE64Encoder encoder = new BASE64Encoder();
         return encoder.encode((UUIDString + UserId).getBytes());
+    }
+
+    public static String getUUIDString() {
+        UUID uuid = UUID.randomUUID();
+        return uuid.toString();
     }
 }

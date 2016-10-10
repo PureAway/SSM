@@ -47,7 +47,7 @@ public class FileServiceImpl implements FileService {
                 System.out.println("========serId===" + userId);
                 System.out.println("========suffix===" + suffix);
                 System.out.println("========token===" + token);
-                fileName = token + "." + suffix;
+                fileName = UUIDUtil.getUUIDString() + "." + suffix;
                 System.out.println("===fileName==" + fileName);
                 paramsMap.put("userHeadImg", fileName);
                 if (CommonConfig.rootDir.trim().endsWith(File.separator)) {

@@ -56,4 +56,34 @@ public class FileController extends BaseController {
         return result;
     }
 
+
+    @ResponseBody
+    @RequestMapping(value = "/upLoadOtherImg.do", method = RequestMethod.POST, produces = ("application/json;charset=UTF-8"))
+    @ApiOperation(value = "上传多文件", notes = "上传多文件", response = Result.class, httpMethod = "POST")
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "返回参数", response = Result.class),
+    })
+    private Result upLoadOtherImg(
+            @ApiParam(value = "上传的文件", required = true, name = "files")
+            @RequestParam("files")
+                    MultipartFile[] multipartFiles,
+            HttpServletRequest request,
+            @ApiParam(value = "文件后缀名", name = "suffix", required = true, example = "suffix = png")
+            @RequestParam("suffix")
+                    String suffix
+    ) {
+        CommonConfig.rootDir = request.getServletContext().getRealPath("/");
+        log.info("=================begin 上传文件====================根路径" + CommonConfig.rootDir);
+        Result result = new Result();
+        try {
+            fileService.upLoadOtherFiles(multipartFiles, getParamMap(request), result);
+        } catch (Exception e) {
+            errorHandler(e, result);
+        } finally {
+            log.info("==================end 上传文件=======================");
+        }
+        return result;
+    }
+
+
 }

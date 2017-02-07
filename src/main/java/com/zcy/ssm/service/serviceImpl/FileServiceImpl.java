@@ -74,4 +74,45 @@ public class FileServiceImpl implements FileService {
             System.out.println("=====upLoadFile.ee=" + e.toString());
         }
     }
+
+    public void upLoadOtherFiles(@RequestParam("files") MultipartFile[] files, Map<String, Object> paramsMap, Result result) {
+        try {
+            if (files != null && files.length > 0) {
+                Map<String, Object> response = new HashMap<String, Object>();
+                //循环获取file数组中得文件
+                for (int i = 0; i < files.length; i++) {
+                    File targetFile;
+                    String fileName;
+                    String path;
+                    MultipartFile file = files[i];
+                    //保存文件
+                    if (file != null && !file.isEmpty()) {
+                        fileName = file.getOriginalFilename();
+                        System.out.println("===fileName==" + fileName);
+                        paramsMap.put("userHeadImg", fileName);
+                        if (CommonConfig.rootDir.trim().endsWith(File.separator)) {
+                            path = CommonConfig.rootDir + CommonConfig.getImageAddress();
+                        } else {
+                            path = CommonConfig.rootDir + File.separator + CommonConfig.getImageAddress();
+                        }
+                        targetFile = new File(path, fileName);
+                        if (!targetFile.exists()) {
+                            targetFile.mkdirs();
+                        }
+                        file.transferTo(targetFile);
+                        System.out.println("====保存文件完成====");
+                        response.put("文件上传结果", CommonConfig.getPublicAddress() + CommonConfig.getImageAddress() + fileName);
+                        result.setResult(response, "文件上传成功", 1);
+                    } else {
+                        System.out.println("===无头像文件==");
+                        result.setResult(null, "无文件信息，上传失败", 0);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            result.setResult(null, "内部服务器错误，上传失败", 0);
+            System.out.println("=====upLoadOtherFiles.ee=" + e.toString());
+        }
+    }
+
 }

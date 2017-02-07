@@ -21,4 +21,6 @@ public interface FileService extends BaseService {
      */
     void upLoadFile(@RequestParam("file") MultipartFile file, Map<String, Object> paramsMap, Result result);
 
+    void upLoadOtherFiles(@RequestParam("files") MultipartFile[] files, Map<String, Object> paramsMap, Result result);
+
 }
